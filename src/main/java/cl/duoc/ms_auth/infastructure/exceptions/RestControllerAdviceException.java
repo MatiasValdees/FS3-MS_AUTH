@@ -1,5 +1,6 @@
 package cl.duoc.ms_auth.infastructure.exceptions;
 
+import cl.duoc.ms_auth.domain.exceptions.PasswordInvalidRegexException;
 import cl.duoc.ms_auth.infastructure.dtos.wrapper.WrapperResponse;
 import cl.duoc.ms_auth.domain.exceptions.EntityNotFoundException;
 import cl.duoc.ms_auth.domain.exceptions.InvalidCredentialException;
@@ -62,6 +63,14 @@ public class RestControllerAdviceException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidCredentialException.class)
     public WrapperResponse<String> handleInvalidCredentialException(InvalidCredentialException ex) {
+        var response = new WrapperResponse<>(ex.getMessage());
+        response.setStatus(statusError);
+        return response;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordInvalidRegexException.class)
+    public WrapperResponse<String> handleInvalidPasswordException(PasswordInvalidRegexException ex) {
         var response = new WrapperResponse<>(ex.getMessage());
         response.setStatus(statusError);
         return response;

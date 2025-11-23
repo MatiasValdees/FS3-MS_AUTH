@@ -3,6 +3,7 @@ package cl.duoc.ms_auth.services.user;
 import cl.duoc.ms_auth.domain.exceptions.EntityNotFoundException;
 import cl.duoc.ms_auth.domain.entities.RoleEntity;
 import cl.duoc.ms_auth.domain.entities.UserEntity;
+import cl.duoc.ms_auth.domain.exceptions.PasswordInvalidRegexException;
 import cl.duoc.ms_auth.domain.exceptions.UsernameException;
 import cl.duoc.ms_auth.domain.repositories.RoleRepository;
 import cl.duoc.ms_auth.domain.repositories.UserRepository;
@@ -76,6 +77,10 @@ public class UserService implements IUserService{
         UserEntity toUpdate = repository.findById(request.id())
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Usuario con id: %s, no existe",request.id())));
         if (!request.password().isBlank()){
+            String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$";
+            if(!request.password().matches(regex)){
+                throw new PasswordInvalidRegexException();
+            }
             toUpdate.setPassword(passwordEncoderBean.encode(request.password()));
         }
         if (!request.username().isBlank()){
